@@ -34,7 +34,8 @@ import copy
 from theme import app_theme
 from application import PlayerApplication
 from titlebar import Titlebar
-#import pypulse_small as pypulse
+import pypulse_small as pypulse
+from sound_manager import SoundSetting
 from guide_box import GuideBox
 from paned_box import PanedBox
 from control_toolbar import ControlToolbar
@@ -44,7 +45,6 @@ from nls import _
 from constant import GAME_CENTER_DATA_ADDRESS
 from download_manager import fetch_service, FetchInfo
 from xdg_support import get_config_file
-#from sound_manager import SoundSetting
 from constant import PROGRAM_NAME
 from events import global_event
 import utils
@@ -73,7 +73,7 @@ class Player(dbus.service.Object):
         self.conf_db = get_config_file("conf.db")
         self.p = None
         self.current_sink_index = None
-        #self.sound_manager = SoundSetting(self.sound_sink_callback)
+        self.sound_manager = SoundSetting(self.sound_sink_callback)
         self.loading = True
         self.hand_pause = False
         self.game_pause = False
@@ -387,9 +387,8 @@ class Player(dbus.service.Object):
             self.inner_control_toolbar.fullscreen_button.set_active(True)
 
     def mute_handler(self, widget, data=None):
-        #if self.current_sink_index:
-            #pypulse.PULSE.set_sink_input_mute(self.current_sink_index, widget.get_active())
-        pass
+        if self.current_sink_index:
+            pypulse.PULSE.set_sink_input_mute(self.current_sink_index, widget.get_active())
 
     def replay_action(self, widget, data=None):
         if self.game_pause:
